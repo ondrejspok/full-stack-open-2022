@@ -9,16 +9,20 @@ const Part = ({ part }) =>
   </p>
 
 const Course = (props) => {
-  console.log(props)
-
+  
   const parts = props.course.parts.map(course =>
     <li key={course.id}>{course.name} {course.exercises}</li>
+  )
+
+  const total = props.course.parts.reduce(
+    (prevValue, currentValue) => prevValue + currentValue.exercises, 0
   )
 
   return (
     <div>
      <Header course={props.course.name}/> 
      {parts}
+     <Total sum={total} />
     </div>
   );
 };
