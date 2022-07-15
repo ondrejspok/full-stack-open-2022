@@ -8,14 +8,15 @@ const App = (props) => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNumber] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    console.log('effect')
-    axios.get('http://localhost:3001/persons').then(response => {
-      console.log('promise fulfilled')
-      setPersons(response.data)
-    })
-  }, []) 
+    console.log("effect");
+    axios.get("http://localhost:3001/persons").then((response) => {
+      console.log("promise fulfilled");
+      setPersons(response.data);
+    });
+  }, [searchTerm]);
 
   const addPerson = (event) => {
     event.preventDefault();
@@ -45,9 +46,44 @@ const App = (props) => {
     setNumber(event.target.value);
   };
 
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const [searchResults, setSearchResults] = React.useState([]);
+  const handleChange = event => {
+     setSearchTerm(event.target.value);
+   };
+   
+  React.useEffect(() => {
+    setSearchResults([])
+    persons.filter(val=>{
+      if(val.name.toLowerCase().includes(searchTerm.toLowerCase()))
+      {
+        setSearchResults(results=>[...results, val]);
+
+      }
+    })
+   }, [searchTerm]);
+ 
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <h3>Search person</h3>
+      <input
+        type="text"
+        placeholder="Search..."
+        onChange={handleSearchChange}
+        value={searchTerm}
+      />
+        <ul>
+        {searchResults.map(person => (
+          <li>{person.name}</li>
+        ))}
+      </ul>
+
+      <h3>Add person</h3>
       <PersonForm
         addPerson={addPerson}
         newName={newName}
