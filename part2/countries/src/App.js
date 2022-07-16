@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-
 function App() {
   const [countries, setCountries] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState("");
 
   useEffect(() => {
     console.log("effect");
@@ -13,12 +14,32 @@ function App() {
     });
   }, []);
 
+  const handleSearchTermChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const results = !searchTerm
+    ? countries
+    : countries.filter((country) =>
+        country.name.common.toLowerCase().includes(searchTerm.toLocaleLowerCase())
+      );
+
   return (
-    <div>
-      {countries.map((val, key)=> {
-         return <div key={key}> {val.name.common} </div>;
-      })}
-    </div>
+    <>
+      <div>
+        <input
+          type="text"
+          placeholder="Search countries..."
+          onChange={handleSearchTermChange}
+          value={searchTerm}
+        />
+      </div>
+      <ul>
+        {React.Children.toArray(
+          results.map((item) => <li>{item.name.common}</li>)
+        )}
+      </ul>
+    </>
   );
 }
 
