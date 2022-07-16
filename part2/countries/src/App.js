@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Countries from "./components/Coutries";
 
 function App() {
   const [countries, setCountries] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState("");
 
   useEffect(() => {
     console.log("effect");
@@ -14,31 +14,23 @@ function App() {
     });
   }, []);
 
-  const handleSearchTermChange = (event) => {
-    setSearchTerm(event.target.value);
-  };
+  const countriesToDisplay = countries.filter(country => country.name.common.toLowerCase().includes(searchTerm.toLowerCase()))
 
-  const results = !searchTerm
-    ? countries
-    : countries.filter((country) =>
-        country.name.common.toLowerCase().includes(searchTerm.toLocaleLowerCase())
-      );
-
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value)
+  }
+  const showCountry = (event) => {
+    event.preventDefault()
+    setSearchTerm(event.target.value)
+  }
+  
   return (
     <>
-      <div>
-        <input
-          type="text"
-          placeholder="Search countries..."
-          onChange={handleSearchTermChange}
-          value={searchTerm}
-        />
-      </div>
-      <ul>
-        {React.Children.toArray(
-          results.map((item) => <li>{item.name.common}</li>)
-        )}
-      </ul>
+    <div>
+      <h2>Countries Finder</h2>
+    <input value={searchTerm} onChange={handleSearchChange} placeholder="Search..."/>
+    </div>
+    <Countries searchTerm={searchTerm} countriesToDisplay={countriesToDisplay} showCountry={showCountry}/>
     </>
   );
 }
