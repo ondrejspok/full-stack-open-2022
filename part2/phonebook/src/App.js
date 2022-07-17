@@ -1,8 +1,8 @@
-import axios from "axios";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
+import peopleService from "./services/People";
 
 const App = (props) => {
   const [persons, setPersons] = useState([]);
@@ -12,11 +12,10 @@ const App = (props) => {
 
   useEffect(() => {
     console.log("effect");
-    axios.get("http://localhost:3001/persons").then((response) => {
-      console.log("promise fulfilled");
-      setPersons(response.data);
+    peopleService.getAll().then((initialPersons) => {
+      setPersons(initialPersons);
     });
-  }, [searchTerm]);
+  }, []);
 
   const addPerson = (event) => {
     event.preventDefault();
@@ -31,8 +30,9 @@ const App = (props) => {
     if (persons.some((person) => person.name === newName)) {
       alert(`${newName} aleready added!`);
     } else {
-      setPersons(persons.concat(personObject));
-      setNewName("");
+      peopleService.create(personObject).then((returnedPerson) => {
+        setPersons(persons.concat(returnedPerson));
+      });
     }
   };
 
@@ -50,38 +50,21 @@ const App = (props) => {
     setSearchTerm(event.target.value);
   };
 
-  const [searchResults, setSearchResults] = React.useState([]);
-  const handleChange = event => {
-     setSearchTerm(event.target.value);
-   };
-   
-  React.useEffect(() => {
-    setSearchResults([])
-    persons.filter(val=>{
-      if(val.name.toLowerCase().includes(searchTerm.toLowerCase()))
-      {
-        setSearchResults(results=>[...results, val]);
-
-      }
-    })
-   }, [searchTerm]);
- 
-
   return (
     <div>
       <h2>Phonebook</h2>
-      <h3>Search person</h3>
+      {/* <h3>Search person</h3>
       <input
         type="text"
         placeholder="Search..."
         onChange={handleSearchChange}
         value={searchTerm}
       />
-        <ul>
-        {searchResults.map(person => (
-          <li>{person.name}</li>
+      <ul>
+        {Object.values(persons).map((person, key) => (
+          <li key={key}>{person.name}</li>
         ))}
-      </ul>
+      </ul> */}
 
       <h3>Add person</h3>
       <PersonForm
@@ -92,7 +75,7 @@ const App = (props) => {
         handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <Persons allPersons={persons} />
+      <Persons personsToDisplay={persons} />
     </div>
   );
 };

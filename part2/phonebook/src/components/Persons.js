@@ -1,9 +1,9 @@
-const Persons = (props) => {
+const Persons = ({personsToDisplay}) => {
     
     return (
         <ul>
-        {props.allPersons.map((person) => (
-          <li key={person.id}>
+        {personsToDisplay.map((person, key) => (
+          <li key={key}>
             {person.name} {person.number}
           </li>
          ))}
