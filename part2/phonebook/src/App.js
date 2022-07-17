@@ -3,11 +3,13 @@ import { useState } from "react";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
 import peopleService from "./services/People";
+import Notification from "./components/Notification";
 
 const App = (props) => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNumber] = useState("");
+  const [confirmMessage, setConfirmMessage] = useState("");
 
   useEffect(() => {
     console.log("effect");
@@ -27,10 +29,14 @@ const App = (props) => {
     };
 
     if (persons.some((person) => person.name === newName)) {
-      alert(`${newName} aleready added!`);
+      setConfirmMessage(`${newName} aleready added!`);
     } else {
       peopleService.create(personObject).then((returnedPerson) => {
         setPersons(persons.concat(returnedPerson));
+        setConfirmMessage(`Added ${returnedPerson.name}.`);
+        setTimeout(() => {
+          setConfirmMessage(null);
+        }, 5000);
       });
     }
   };
@@ -51,26 +57,14 @@ const App = (props) => {
     if (window.confirm(`Delete?`)) {
       peopleService
         .remove(id)
-        .then(setPersons(persons.filter((person) => person.id ==! id)));
+        .then(setPersons(persons.filter((person) => person.id == !id)));
     }
   };
 
   return (
     <div>
       <h2>Phonebook</h2>
-      {/* <h3>Search person</h3>
-      <input
-        type="text"
-        placeholder="Search..."
-        onChange={handleSearchChange}
-        value={searchTerm}
-      />
-      <ul>
-        {Object.values(persons).map((person, key) => (
-          <li key={key}>{person.name}</li>
-        ))}
-      </ul> */}
-
+      <Notification message={confirmMessage} />
       <h3>Add person</h3>
       <PersonForm
         addPerson={addPerson}
