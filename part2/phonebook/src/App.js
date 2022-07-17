@@ -8,7 +8,6 @@ const App = (props) => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNumber] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     console.log("effect");
@@ -37,17 +36,23 @@ const App = (props) => {
   };
 
   const handleNameChange = (event) => {
-    console.log(event.target.value);
     setNewName(event.target.value);
   };
 
   const handleNumberChange = (event) => {
-    console.log(event.target.value);
     setNumber(event.target.value);
   };
 
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
+  const deletePerson = (event) => {
+    event.preventDefault();
+    const id = event.target.value;
+    const personToDelete = persons.find((person) => person.id === id);
+
+    if (window.confirm(`Delete?`)) {
+      peopleService
+        .remove(id)
+        .then(setPersons(persons.filter((person) => person.id ==! id)));
+    }
   };
 
   return (
@@ -75,7 +80,7 @@ const App = (props) => {
         handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <Persons personsToDisplay={persons} />
+      <Persons personsToDisplay={persons} handleRemove={deletePerson} />
     </div>
   );
 };

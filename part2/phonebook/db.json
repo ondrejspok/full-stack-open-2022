@@ -11,54 +11,20 @@
       "id": 2
     },
     {
-      "name": "Dan Abramov",
-      "number": "12-43-234345",
+      "name": "Sandro Tellas",
+      "number": "040-123456",
       "id": 3
     },
     {
-      "name": "Mary Poppendieck",
-      "number": "39-23-6423122",
+      "name": "Dada Loverace",
+      "number": "39-44-5323523",
       "id": 4
     },
-    [
-      {
-        "name": "Arto Hellas",
-        "number": "040-123456",
-        "id": 1
-      },
-      {
-        "name": "Ada Lovelace",
-        "number": "39-44-5323523",
-        "id": 2
-      },
-      {
-        "name": "Dan Abramov",
-        "number": "12-43-234345",
-        "id": 3
-      },
-      {
-        "name": "Mary Poppendieck",
-        "number": "39-23-6423122",
-        "id": 4
-      },
-      {
-        "name": "jack",
-        "number": "2",
-        "date": "2022-07-17T06:28:19.429Z",
-        "id": 5
-      }
-    ],
     {
-      "name": "jack",
-      "number": "2",
-      "date": "2022-07-17T07:21:08.121Z",
-      "id": 6
-    },
-    {
-      "name": "jacky",
-      "number": "2",
-      "date": "2022-07-17T07:22:13.533Z",
-      "id": 7
+      "name": "Jerry Berry",
+      "number": "123-231-123",
+      "date": "2022-07-17T08:34:36.691Z",
+      "id": 5
     }
   ]
 }
