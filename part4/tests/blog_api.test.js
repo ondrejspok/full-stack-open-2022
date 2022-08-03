@@ -42,10 +42,20 @@ test('all blogs are returned', async () => {
   
     expect(response.body).toHaveLength(helper.initialBlogs.length)
 })
+
+test('the unique identifier property of the blog posts is named id', async () => {
+    const response = await api.get('/api/blogs')
+
+    expect(response.body[0]._id).toBeDefined()
+}, 10000)
+
   
 // test('a valid blog can be added', async () => {
 //     const newBlog = {
-//       title: 'async/await simplifies. so help me codd',
+//       title: 'async/await simplifies. so help me Codd',
+//       author: 'Jerry Asynceri',
+//       url: 'www.asyncisnotacrime.com',
+//       likes: 12,
 //     }
   
 //     await api
@@ -60,9 +70,9 @@ test('all blogs are returned', async () => {
   
 //     expect(response.body).toHaveLength(initialBlogs.length + 1)
 //     expect(title).toContain(
-//       'async/await simplifies. so help me codd'
+//       'async/await simplifies. so help me Codd'
 //     )
-//   }, 100000)
+//   })
 
   test('a specific blog can be viewed', async () => {
     const blogsAtStart = await helper.blogsInDb()
