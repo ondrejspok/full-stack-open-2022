@@ -50,29 +50,30 @@ test('the unique identifier property of the blog posts is named id', async () =>
 }, 10000)
 
   
-// test('a valid blog can be added', async () => {
-//     const newBlog = {
-//       title: 'async/await simplifies. so help me Codd',
-//       author: 'Jerry Asynceri',
-//       url: 'www.asyncisnotacrime.com',
-//       likes: 12,
-//     }
+test('an invalid blog can be added', async () => {
+    const newBlog = {
+      title: 'async/await simplifies. so help me Codd',
+      author: 'Jerry Asynceri',
+      url: 'www.asyncisnotacrime.com',
+      likes: 12,
+    }
   
-//     await api
-//       .post('/api/blogs')
-//       .send(newBlog)
-//       .expect(201)
-//       .expect('Content-Type', /application\/json/)
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
   
-//     const response = await api.get('/api/blogs')
+    const response = await api.get('/api/blogs')
   
-//     const title = response.body.map(r => r.title)
+    const title = response.body.map(r => r.title)
+    console.log(title)
   
-//     expect(response.body).toHaveLength(initialBlogs.length + 1)
-//     expect(title).toContain(
-//       'async/await simplifies. so help me Codd'
-//     )
-//   })
+    expect(response.body).toHaveLength(initialBlogs.length + 1)
+    expect(title).toContain(
+      'async/await simplifies. so help me Codd'
+    )
+  }, 25000)
 
   test('a specific blog can be viewed', async () => {
     const blogsAtStart = await helper.blogsInDb()
