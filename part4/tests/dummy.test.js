@@ -1,5 +1,21 @@
 const listHelper = require('../utils/list_helper')
 
+const dummyBlogs = [
+    {
+    title: 'Go To Statement Considered Harmful',
+    author: 'Edsger W. Dijkstra',
+    url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+    likes: 5,
+    },
+    
+    {
+        title: 'Statement to-go Harmul considered Be May',
+        author: 'Deseger X. Eggstra',
+        url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+        likes: 55,
+    },
+]
+
 test('dummy returns one', () => {
   const blogs = []
 
@@ -27,4 +43,14 @@ describe('total likes', () => {
       const result = listHelper.totalLikes(listWithOneBlog)
       expect(result).toBe(5)
     })
-  })
+  
+    test('when popular D. Eggstra beats hated E. Dijkstra a.k.a. favorite blog test', () => {
+        const result = listHelper.favoriteBlog(dummyBlogs)
+        expect(result).toEqual({
+            title: 'Statement to-go Harmul considered Be May',
+            author: 'Deseger X. Eggstra',
+            likes: 55, 
+        })
+    })
+})
+
