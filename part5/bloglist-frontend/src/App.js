@@ -16,6 +16,7 @@ const App = () => {
   const handleLogin = async (event) => {
     event.preventDefault();
 
+    // error handling missing
     try {
       const user = await loginService.login({
         username,
