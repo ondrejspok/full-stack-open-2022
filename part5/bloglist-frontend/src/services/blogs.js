@@ -1,9 +1,17 @@
 import axios from 'axios'
-const baseUrl = '/api/blogs'
+const baseUrl = 'api/blogs'
+const loginUrl = 'api/login'
 
-const getAll = () => {
-  const request = axios.get(baseUrl)
-  return request.then(response => response.data)
+export const getAll = async () => {
+  const response = await axios.get(baseUrl)
+  return response.data
 }
 
-export default getAll;
+export const getLoginToken = async (username, password) => {
+    try {
+      const response = await axios.post(loginUrl, {username, password})
+      return response.data
+    } catch(err) {
+      return err.response.data
+    }
+}

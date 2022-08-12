@@ -1,149 +1,63 @@
-import { useState, useEffect } from "react";
-
-import Blog from "./components/Blog";
-import Notification from "./components/Notification";
-import Footer from "./components/Footer";
-import blogService from "./services/blogs";
-import loginService from "./services/login";
+import React, { useState, useEffect } from 'react'
+import Blog from './components/Blog'
+import {getAll, getLoginToken} from './services/blogs'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
-  const [newBlog, setNewBlog] = useState("");
-  const [showAll, setShowAll] = useState(true);
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
+  const [blogs, setBlogs] = useState([])
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [user, setUser] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
 
-  useEffect(() => {
-    blogService.getAll().then((initialBlogs) => {
-      setBlogs(initialBlogs);
-    });
-  }, []);
-
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      setUser(user);
-      blogService.setToken(user.token);
-    }
-  }, []);
-
-  const handleLogin = async (event) => {
-    event.preventDefault();
-    try {
-      const user = await loginService.login({
-        username,
-        password,
-      });
-      setUser(user);
-      blogService.setToken(user.token);
-      window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
-      setUsername("");
-      setPassword("");
-    } catch (exception) {
-      setErrorMessage("wrong credentials");
+  async function getAllBlogs() {
+    let blogsResponse = await getAll()
+    blogsResponse = blogsResponse.filter(blog => blog.user.username === user.username)
+    setBlogs(blogsResponse)
+  }
+  function showNotification(text, duration) {
+    setErrorMessage(text)
       setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
+        setErrorMessage('')
+      },duration)
+  }
+  async function handleSubmit(e) {
+    e.preventDefault()
+    const loginResponse = await getLoginToken(username, password)
+    if(loginResponse.error) {
+      showNotification(loginResponse.error, 3000)
+    } else if(loginResponse.token) {
+      setUser(loginResponse)
     }
-  };
+  }
+  useEffect(() => {
+    getAllBlogs()
+  }, [user])
 
-  const addBlog = (event) => {
-    event.preventDefault();
-    const blogObject = {
-      title: newBlog,
-      date: new Date().toISOString(),
-      id: blogs.length + 1,
-    };
-
-    blogService.create(blogObject).then((returnedBlog) => {
-      setBlogs(blogs.concat(returnedBlog));
-      setNewBlog("");
-    });
-  };
-
-  const handleBlogChange = (event) => {
-    setNewBlog(event.target.value);
-  };
-
-  blogService
-    .update(id, changedBlog)
-    .then((returnedBlog) => {
-      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)));
-    })
-    .catch((error) => {
-      setErrorMessage(`Blog '${blog.content}' was already removed from server`);
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
-      setBlogs(blogs.filter((n) => n.id !== id));
-    });
-
-  const blogsToShow = showAll ? blogs : blogs.filter((blog) => blog.important);
-
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
+  if(user) {
+    return (
       <div>
-        username
-        <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
+        <h2>blogs</h2>
+        <p>{user.username} logged in</p>
+        {
+          blogs.map(blog => <Blog key={blog._id} blog={blog} />)
+        }
       </div>
+    )
+  } else if(!user) {
+    return (
       <div>
-        password
-        <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
+        <h2>log in to application</h2>
+        <p>{errorMessage}</p>
+        <form onSubmit={handleSubmit}>
+          <label htmlFor='username_input'>username</label>
+          <input type='text' name='username_input' onChange={(e) => setUsername(e.target.value)}/><br/>
+          <label htmlFor='password_input'>password</label>
+          <input type='password' name='password_input' onChange={(e) => setPassword(e.target.value)}/><br/>
+          <input type='submit' value='login'/>
+        </form>
       </div>
-      <button type="submit">login</button>
-    </form>
-  );
+    )
+  }
+}
 
-  const blogForm = () => (
-    <form onSubmit={addBlog}>
-      <input value={newBlog} onChange={handleBlogChange} />
-      <button type="submit">save</button>
-    </form>
-  );
-
-  return (
-    <div>
-      <h1>Blogs</h1>
-      <Notification message={errorMessage} />
-
-      {user === null ? (
-        loginForm()
-      ) : (
-        <div>
-          <p>{user.name} logged in</p>
-          {blogForm()}
-        </div>
-      )}
-
-      <div>
-        <button onClick={() => setShowAll(!showAll)}></button>
-      </div>
-      <ul>
-        {blogsToShow.map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            toggleImportance={() => toggleImportanceOf(blog.id)}
-          />
-        ))}
-      </ul>
-
-      <Footer />
-    </div>
-  );
-};
-
-export default App;
+export default App
