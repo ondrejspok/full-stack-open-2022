@@ -16,18 +16,26 @@ const App = () => {
     );
     setBlogs(blogsResponse);
   }
-  function showNotification(text, duration) {
+
+  const logOut = () => {
+    window.localStorage.clear();
+    setUser("");
+    setBlogs("");
+  };
+
+  const showNotification = (text, duration) => {
     setErrorMessage(text);
     setTimeout(() => {
       setErrorMessage("");
     }, duration);
-  }
+  };
   async function handleSubmit(e) {
     e.preventDefault();
     const loginResponse = await getLoginToken(username, password);
     if (loginResponse.error) {
       showNotification(loginResponse.error, 3000);
     } else if (loginResponse.token) {
+      window.localStorage.setItem("user", JSON.stringify(loginResponse));
       setUser(loginResponse);
     }
   }
@@ -40,6 +48,7 @@ const App = () => {
       <div>
         <h2>blogs</h2>
         <p>{user.username} logged in</p>
+        <button onClick={logOut}>log out </button>
         {blogs.map((blog) => (
           <Blog key={blog._id} blog={blog} />
         ))}
