@@ -8,6 +8,8 @@ const App = () => {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
 
   async function getAllBlogs() {
     let blogsResponse = await getAll();
@@ -39,6 +41,13 @@ const App = () => {
       setUser(loginResponse);
     }
   }
+
+  //add create blog for logged-in user
+
+  async function handleCreate(e) {
+    e.preventDefault();
+  }
+
   useEffect(() => {
     getAllBlogs();
   }, [user]);
@@ -49,6 +58,14 @@ const App = () => {
         <h2>blogs</h2>
         <p>{user.username} logged in</p>
         <button onClick={logOut}>log out </button>
+        <h3>Create new</h3>
+        <form onSubmit={handleCreate}>
+          <label>author</label>
+          <input type="text" onChange={(e) => setAuthor(e.target.value)} />
+          <br />
+          <label>title</label>
+          <input type="text" onChange={(e) => setTitle(e.target.value)}></input>
+        </form>
         {blogs.map((blog) => (
           <Blog key={blog._id} blog={blog} />
         ))}
