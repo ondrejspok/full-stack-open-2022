@@ -1,5 +1,4 @@
 import React from "react";
-// import Weather from './Weather.js'
 
 const Country = ({ country }) => {
   return (
@@ -21,8 +20,6 @@ const Country = ({ country }) => {
           {Object.values(country.languages).map((language, i) => <li key={i}>{language}</li>)}
         </ul>
       </div>
-      {/* <h3>Weather in {country.capital}</h3>
-      <Weather city={country.capital} /> */}
     </div>
   );
 };
