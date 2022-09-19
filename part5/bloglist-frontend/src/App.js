@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Blog from "./components/Blog";
-import { getAll, getLoginToken } from "./services/blogs";
+import blogService from "./services/blogService";
+import { createBlog, getAll, getLoginToken } from "./services/blogs";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -11,8 +12,22 @@ const App = () => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
 
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const loginResponse = await getLoginToken(username, password);
+    if (loginResponse.error) {
+      showNotification(loginResponse.error, 3000);
+    } else if (loginResponse.token) {
+      window.localStorage.setItem("user", JSON.stringify(loginResponse));
+      setUser(loginResponse);
+    }
+  }
+
   async function getAllBlogs() {
+    
     let blogsResponse = await getAll();
+
     blogsResponse = blogsResponse.filter(
       (blog) => blog.user.username === user.username
     );
@@ -31,21 +46,22 @@ const App = () => {
       setErrorMessage("");
     }, duration);
   };
-  async function handleSubmit(e) {
-    e.preventDefault();
-    const loginResponse = await getLoginToken(username, password);
-    if (loginResponse.error) {
-      showNotification(loginResponse.error, 3000);
-    } else if (loginResponse.token) {
-      window.localStorage.setItem("user", JSON.stringify(loginResponse));
-      setUser(loginResponse);
-    }
-  }
+
 
   //add create blog for logged-in user
 
   async function handleCreate(e) {
     e.preventDefault();
+    const blogObj = {
+      title: e.target.title.value,
+      author: e.target.author.value,
+      url: e.target.url.value,
+    };
+
+    console.log(blogObj);
+    const response = await createBlog(user.token, blogObj);
+    showNotification(`blog saved by ${response.username}`, 3000);
+    getAllBlogs();
   }
 
   useEffect(() => {
@@ -60,11 +76,16 @@ const App = () => {
         <button onClick={logOut}>log out </button>
         <h3>Create new</h3>
         <form onSubmit={handleCreate}>
-          <label>author</label>
-          <input type="text" onChange={(e) => setAuthor(e.target.value)} />
+          <label htmlFor="title">title</label>
+          <input name="title" type="text" />
           <br />
-          <label>title</label>
-          <input type="text" onChange={(e) => setTitle(e.target.value)}></input>
+          <label htmlFor="author">author</label>
+          <input name="author" type="text" />
+          <br />
+          <label htmlFor="url">url</label>
+          <input name="url" type="text" />
+          <br />
+          <input type="submit" value="add" />
         </form>
         {blogs.map((blog) => (
           <Blog key={blog._id} blog={blog} />
