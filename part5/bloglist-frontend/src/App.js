@@ -12,7 +12,6 @@ const App = () => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
 
-
   async function handleSubmit(e) {
     e.preventDefault();
     const loginResponse = await getLoginToken(username, password);
@@ -25,7 +24,6 @@ const App = () => {
   }
 
   async function getAllBlogs() {
-    
     let blogsResponse = await getAll();
 
     blogsResponse = blogsResponse.filter(
@@ -46,7 +44,6 @@ const App = () => {
       setErrorMessage("");
     }, duration);
   };
-
 
   //add create blog for logged-in user
 
