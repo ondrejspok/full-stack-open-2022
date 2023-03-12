@@ -71,6 +71,7 @@ const App = () => {
         <h2>blogs</h2>
         <p>{user.username} logged in</p>
         <button onClick={logOut}>log out </button>
+        <p style={{ color: "green" }}>{errorMessage}</p>
         <h3>Create new</h3>
         <form onSubmit={handleCreate}>
           <label htmlFor="title">title</label>
@@ -93,7 +94,7 @@ const App = () => {
     return (
       <div>
         <h2>log in to application</h2>
-        <p>{errorMessage}</p>
+        <p style={{ color: "red" }}>{message}</p>
         <form onSubmit={handleSubmit}>
           <label htmlFor="username_input">username</label>
           <input
